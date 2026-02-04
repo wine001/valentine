@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Question ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffeef2;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            touch-action: none;
+            /* กันบั๊กในมือถือ */
+        }
+
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.2);
+            background-color: #ff758f;
+        }
+
+        #noBtn {
+            background-color: #adb5bd;
+            color: white;
+            /* แก้ไขตรงนี้: ใช้ fixed เพื่อให้วิ่งอิงกับหน้าจอทั้งหมด */
+            position: fixed;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+
+        #successContainer {
+            display: none;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff4d6d;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <video id="bgVideo" loop muted playsinline
+        style="display: none; position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; object-fit: cover;">
+        <source src="Fireworks.mp4" type="video/mp4">
+    </video>
+    <div class="container" id="mainContainer">
+        <h1>ช้อน! ค้าบ จะไปเที่ยววาเลนไทน์กับเค้าไหม? 🌹</h1>
+        <div class="buttons">
+            <button id="yesBtn">ไปสิ! ❤️</button>
+            <button id="noBtn" style="position: static;">ไม่ไปหรอก</button>
+        </div>
+    </div>
+
+    <div id="successContainer">
+        <h1 style="font-size: 3rem;">เย้! ดีใจที่สุดเลย 💖✨</h1>
+        <p style="font-size: 2rem; color: #ff4d6d;">ไปเที่ยวด้วยกันนะค้าบ!</p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const mainContainer = document.getElementById('mainContainer');
+        const successContainer = document.getElementById('successContainer');
+
+        // ฟังก์ชันหนี
+        function moveButton() {
+            // เปลี่ยนเป็น fixed ทันทีที่เริ่มขยับ
+            noBtn.style.position = 'fixed';
+
+            // คำนวณพื้นที่ที่ปุ่มจะไปได้ (ไม่ให้ล้นขอบจอ)
+            const padding = 50;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // กันการกดในมือถือ
+            moveButton();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            mainContainer.style.display = 'none';
+            noBtn.style.display = 'none'; // ซ่อนปุ่ม No ไปเลย
+            successContainer.style.display = 'block';
+            document.body.style.backgroundColor = '#ffccd5';
+
+            const video = document.getElementById('bgVideo');
+            video.style.display = 'block'; // แสดงวิดีโอ
+            video.play();                  // สั่งให้วิดีโอเล่น
+
+            setInterval(createHeart, 150);
+        });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+            heart.style.opacity = Math.random();
+            heart.style.fontSize = Math.random() * 20 + 15 + "px";
+
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+    </script>
+</body>
+
+</html>
